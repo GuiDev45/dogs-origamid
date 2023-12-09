@@ -1,5 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { Input } from "../../components/Forms/Input";
+import { Button } from "../../components/Forms/Button";
 
 type TFormData = {
   username: string;
@@ -33,17 +35,19 @@ export default function LoginForm() {
     <section>
       <h1>Login</h1>
       <form onSubmit={handleSubmit(handleLoginSubmit)}>
-        <input
+        <Input
+          label="Usuário"
           type="text"
-          placeholder="Nome do usuário"
-          {...register("username")}
+          name="username"
+          placeholder="Nome Usuário"
         />
-        <input
+        <Input
+          label="Senha"
           type="password"
-          placeholder="Digite sua senha"
-          {...register("password")}
+          name="password"
+          placeholder="Senha"
         />
-        <button type="submit">Entrar</button>
+        <Button type="submit">Entrar</Button>
       </form>
       <Link to="/login/criar">Cadastro</Link>
     </section>
