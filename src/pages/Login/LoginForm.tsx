@@ -4,10 +4,10 @@ import { Input } from "../../components/Forms/Input";
 import { Button } from "../../components/Forms/Button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../models/schema";
-import axios from "axios";
+import { getToken, getUserData } from "../../services/apiService";
 
 type TFormData = {
-  identifier: string;
+  username: string;
   password: string;
 };
 
@@ -16,44 +16,47 @@ export default function LoginForm() {
     handleSubmit,
     register,
     formState: { errors },
+    reset,
   } = useForm<TFormData>({
     resolver: zodResolver(loginSchema),
   });
 
   const handleLoginSubmit = async (formData: TFormData) => {
     try {
-      const response = await axios.post(
-        "https://dogsapi.origamid.dev/json/jwt-auth/v1/token",
-        {
-          identifier: formData.identifier,
-          password: formData.password,
-        },
-        {
-          headers: {
-            "Content-type": "application/json",
-          },
-        },
-      );
+      const tokenResponse = await getToken({
+        username: formData.username,
+        password: formData.password,
+      });
 
-      console.log(response.data);
+      console.log(tokenResponse.data);
+
+      // Limpa os campos do formulário após sucesso
+      reset();
+
+      // Obtem o usuário após obter o token
+      await getUser(tokenResponse.data.token);
     } catch (error) {
       console.error(error);
     }
   };
 
+  async function getUser(token: string) {
+    try {
+      const userResponse = await getUserData(token);
+
+      console.log(userResponse.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <section>
       <h1>Login</h1>
       <form onSubmit={handleSubmit(handleLoginSubmit)}>
-        <Input
-          label="Usuário ou E-mail"
-          type="text"
-          {...register("identifier")}
-        />
-        {errors.identifier && (
-          <p className="text-red-500 text-xl mt-1">
-            {errors.identifier.message}
-          </p>
+        <Input label="Usuário" type="text" {...register("username")} />
+        {errors.username && (
+          <p className="text-red-500 text-xl mt-1">{errors.username.message}</p>
         )}
         <Input label="Senha" type="password" {...register("password")} />
         {errors.password && (

@@ -5,14 +5,9 @@ const required = {
 };
 
 export const loginSchema = z.object({
-  identifier: z.string(required).refine(
-    (data) => {
-      return data.length >= 3;
-    },
-    {
-      message:
-        "O nome deve ter pelo menos 3 caracteres ou você pode inserir um e-mail válido.",
-    },
-  ),
-  password: z.string(required).min(8, "A senha precisa ter ao menos 8 dígitos"),
+  username: z
+    .string(required)
+    .min(3, "O usuário precisa ter ao menos 3 dígitos"),
+
+  password: z.string(required).min(3, "A senha precisa ter ao menos 3 dígitos"),
 });
