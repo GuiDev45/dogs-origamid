@@ -10,7 +10,7 @@ type TFormData = {
 };
 
 export const useLoginForm = () => {
-  const { setData, setLoading, loading } = useAuth();
+  const { setData, setLoading, loading, logout, data } = useAuth();
 
   const {
     handleSubmit,
@@ -23,26 +23,35 @@ export const useLoginForm = () => {
 
   const handleLoginSubmit: SubmitHandler<TFormData> = async (formData) => {
     try {
-      // Desabilitar o botão antes de iniciar a solicitação assíncrona
       setLoading(true);
+
+      if (
+        data.token &&
+        data.tokenExpiration &&
+        data.tokenExpiration < Date.now()
+      ) {
+        console.log("Token expirado. Fazendo logout...");
+        logout();
+        return;
+      }
 
       const tokenResponse = await getToken({
         username: formData.username,
         password: formData.password,
       });
 
-      // Atualizar o contexto de autenticação com os dados (token e user)
+      console.log("Token obtido com sucesso:", tokenResponse.data.token);
+
       setData({
         token: tokenResponse.data.token,
         user: await getUser(tokenResponse.data.token),
+        tokenExpiration: Date.now() + 60 * 60 * 1000,
       });
 
-      // Limpar os campos do formulário após sucesso
       reset();
     } catch (error) {
-      console.error(error);
+      console.error("Erro durante a autenticação:", error);
     } finally {
-      // Independente de sucesso ou falha, reabilitar o botão
       setLoading(false);
     }
   };
@@ -50,11 +59,8 @@ export const useLoginForm = () => {
   async function getUser(token: string) {
     try {
       const userResponse = await getUserData(token);
-
-      // Retornar os dados do usuário
       return {
         username: userResponse.data.username,
-        // Outras informações do usuário, se necessário
       };
     } catch (error) {
       console.error(error);

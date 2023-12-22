@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import { AuthProvider } from "./contexts/AuthContext";
 
+// Lembrando que o AuthProvider está provendo o contexto para toda a aplicação
 export default function App() {
   return (
     <>

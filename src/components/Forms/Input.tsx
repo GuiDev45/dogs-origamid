@@ -1,9 +1,5 @@
 import React from "react";
 
-/*
-Validação e manipulação do formulário: O ref pode ser útil se você precisar realizar validações ou manipulações específicas no campo de entrada a partir de funções ou eventos fora do componente Input.
-*/
-
 type TInput = {
   label: string;
   type: string;

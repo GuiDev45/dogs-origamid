@@ -4,7 +4,7 @@ import iconUsuario from "../../assets/usuario.svg";
 import { useAuth } from "../../contexts/authHooks";
 
 export default function Header() {
-  const { data } = useAuth();
+  const { data, logout } = useAuth();
 
   return (
     <header className="bg-white shadow-sm fixed w-full z-50 top-0">
@@ -16,10 +16,22 @@ export default function Header() {
         </div>
         <div className="flex items-center">
           {data.token ? (
-            // Lembrando que a página conta ainda não existe.
-            <Link to={"/conta"} className="flex items-center text-gray-800">
-              <span className="text-gray-800">{data.user?.username}</span>
-            </Link>
+            <>
+              <Link to={"/conta"} className="flex items-center text-gray-800">
+                <span className="text-gray-800">{data.user?.username}</span>
+                <img
+                  src={iconUsuario}
+                  className="ml-2 w-4 h-5"
+                  alt="Ícone de Usuário"
+                />
+              </Link>
+              <button
+                className="ml-4 px-2 py-1 text-white bg-red-500 rounded"
+                onClick={logout}
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <Link to={"/login"} className="flex items-center text-gray-800">
               <span>Login / Criar</span>

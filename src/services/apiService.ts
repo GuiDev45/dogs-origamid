@@ -17,5 +17,14 @@ const api = axios.create({
 export const getToken = (body: TServiceLogin) =>
   api.post("/jwt-auth/v1/token", body);
 
+export const validateToken = (token: string) =>
+  api.post(
+    "/jwt-auth/v1/token/validate",
+    {},
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
+
 export const getUserData = (token: string) =>
   api.get("/api/user", { headers: { Authorization: `Bearer ${token}` } });
